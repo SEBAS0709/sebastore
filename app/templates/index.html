@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}SebaStore - Ofertas de videojuegos{% endblock %}
+{% block content %}
+
+<div class="hero">
+  <h1>Las mejores ofertas de juegos, en un solo lugar</h1>
+  <p>Comparamos precios en Steam, GOG, Epic, Humble y más de 30 tiendas digitales.</p>
+</div>
+
+<form class="filters" method="get" action="/">
+  <input type="text" name="buscar" placeholder="Buscar un juego..." value="{{ buscar }}">
+  <select name="tienda_id" onchange="this.form.submit()">
+    <option value="">Todas las tiendas</option>
+    {% for t in tiendas %}
+      <option value="{{ t.id }}" {% if tienda_id == t.id %}selected{% endif %}>{{ t.nombre }}</option>
+    {% endfor %}
+  </select>
+  <select name="orden" onchange="this.form.submit()">
+    <option value="descuento" {% if orden == 'descuento' %}selected{% endif %}>Mayor descuento</option>
+    <option value="precio" {% if orden == 'precio' %}selected{% endif %}>Menor precio</option>
+    <option value="rating" {% if orden == 'rating' %}selected{% endif %}>Mejor calificación</option>
+  </select>
+  <button class="btn" type="submit">Filtrar</button>
+</form>
+
+{% if ofertas %}
+<div class="deals-grid">
+  {% for o in ofertas %}
+  <div class="deal-card">
+    <span class="discount-tag">-{{ o.porcentaje_descuento | round(0) | int }}%</span>
+    <span class="store-badge">{{ o.tienda.nombre }}</span>
+    <img class="deal-thumb" src="{{ o.juego.imagen_url or 'https://via.placeholder.com/300x170/1F232C/8A8F9C?text=SebaStore' }}" alt="{{ o.juego.titulo }}">
+    <div class="deal-body">
+      <p class="deal-title">{{ o.juego.titulo }}</p>
+      <div class="price-row">
+        <span class="price-old">Bs {{ "%.2f"|format(o.precio_normal) }}</span>
+        <span class="price-new">Bs {{ "%.2f"|format(o.precio_oferta) }}</span>
+      </div>
+      {% if o.calificacion_oferta %}
+      <div class="rating-row">★ {{ "%.1f"|format(o.calificacion_oferta) }} calificación de oferta</div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <strong>Todavía no hay ofertas en el catálogo</strong>
+  Presiona "Recolectar ofertas" arriba para traer las ofertas actuales desde CheapShark.
+</div>
+{% endif %}
+
+{% endblock %}

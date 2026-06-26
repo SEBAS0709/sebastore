@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ "Editar" if juego else "Registrar" }} juego{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h1>{{ "Editar juego" if juego else "Registrar nuevo juego" }}</h1>
+</div>
+
+<div class="form-card">
+  <form method="post" action="{{ '/admin/juegos/' + juego.id|string + '/editar' if juego else '/admin/juegos/nuevo' }}">
+    <div class="form-group">
+      <label for="titulo">Título</label>
+      <input type="text" id="titulo" name="titulo" required value="{{ juego.titulo if juego else '' }}">
+    </div>
+    <div class="form-group">
+      <label for="imagen_url">URL de imagen (opcional)</label>
+      <input type="text" id="imagen_url" name="imagen_url" value="{{ juego.imagen_url if juego else '' }}">
+    </div>
+    <div class="form-group">
+      <label for="metacritic_score">Puntaje Metacritic (opcional)</label>
+      <input type="number" id="metacritic_score" name="metacritic_score" min="0" max="100" value="{{ juego.metacritic_score if juego else '' }}">
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-accent" type="submit">{{ "Guardar cambios" if juego else "Registrar" }}</button>
+      <a class="btn btn-ghost" href="/admin/juegos">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

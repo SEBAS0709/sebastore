@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ "Editar" if oferta else "Registrar" }} oferta{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h1>{{ "Editar oferta" if oferta else "Registrar nueva oferta" }}</h1>
+</div>
+
+<div class="form-card">
+  <form method="post" action="{{ '/admin/ofertas/' + oferta.id|string + '/editar' if oferta else '/admin/ofertas/nuevo' }}">
+
+    {% if not oferta %}
+    <div class="form-group">
+      <label for="juego_id">Juego</label>
+      <select id="juego_id" name="juego_id" required>
+        {% for j in juegos %}
+        <option value="{{ j.id }}">{{ j.titulo }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="tienda_id">Tienda</label>
+      <select id="tienda_id" name="tienda_id" required>
+        {% for t in tiendas %}
+        <option value="{{ t.id }}">{{ t.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% else %}
+    <p style="color: var(--text-muted); font-size: 13px;">
+      Juego: <strong style="color: var(--text);">{{ oferta.juego.titulo }}</strong> ·
+      Tienda: <strong style="color: var(--text);">{{ oferta.tienda.nombre }}</strong>
+    </p>
+    {% endif %}
+
+    <div class="form-group">
+      <label for="precio_normal">Precio normal</label>
+      <input type="number" step="0.01" id="precio_normal" name="precio_normal" required value="{{ oferta.precio_normal if oferta else '' }}">
+    </div>
+    <div class="form-group">
+      <label for="precio_oferta">Precio de oferta</label>
+      <input type="number" step="0.01" id="precio_oferta" name="precio_oferta" required value="{{ oferta.precio_oferta if oferta else '' }}">
+    </div>
+    <div class="form-group">
+      <label for="porcentaje_descuento">% de descuento</label>
+      <input type="number" step="0.01" id="porcentaje_descuento" name="porcentaje_descuento" value="{{ oferta.porcentaje_descuento if oferta else '0' }}">
+    </div>
+
+    {% if oferta %}
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="activa" {% if oferta.activa %}checked{% endif %} style="width:auto; display:inline-block;">
+        Oferta activa
+      </label>
+    </div>
+    {% endif %}
+
+    <div class="form-actions">
+      <button class="btn btn-accent" type="submit">{{ "Guardar cambios" if oferta else "Registrar" }}</button>
+      <a class="btn btn-ghost" href="/admin/ofertas">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

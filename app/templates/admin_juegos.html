@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Administrar Juegos{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h1>Juegos registrados</h1>
+  <a href="/admin/juegos/nuevo" class="btn btn-accent">+ Registrar juego</a>
+</div>
+
+<form class="filters" method="get" action="/admin/juegos">
+  <input type="text" name="buscar" placeholder="Buscar por título..." value="{{ buscar }}">
+  <button class="btn" type="submit">Buscar</button>
+</form>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Imagen</th>
+      <th>Título</th>
+      <th>Metacritic</th>
+      <th>Origen</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for j in juegos %}
+    <tr>
+      <td><img class="thumb" src="{{ j.imagen_url or 'https://via.placeholder.com/56x32/1F232C/8A8F9C?text=-' }}"></td>
+      <td>{{ j.titulo }}</td>
+      <td>{{ j.metacritic_score or "-" }}</td>
+      <td>{% if j.cheapshark_game_id %}<span class="badge badge-active">CheapShark</span>{% else %}<span class="badge badge-inactive">Manual</span>{% endif %}</td>
+      <td class="actions-cell">
+        <a class="btn btn-sm btn-ghost" href="/admin/juegos/{{ j.id }}/editar">Editar</a>
+        <form class="form-eliminar" method="post" action="/admin/juegos/{{ j.id }}/eliminar">
+          <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No hay juegos registrados todavía.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Administrar Ofertas{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h1>Ofertas registradas</h1>
+  <a href="/admin/ofertas/nuevo" class="btn btn-accent">+ Registrar oferta</a>
+</div>
+
+<div class="export-bar">
+  <a class="btn btn-sm" href="/api/export/csv">⬇ Exportar CSV</a>
+  <a class="btn btn-sm" href="/api/export/excel">⬇ Exportar Excel</a>
+  <a class="btn btn-sm" href="/api/export/pdf">⬇ Exportar PDF</a>
+</div>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Juego</th>
+      <th>Tienda</th>
+      <th>Precio normal</th>
+      <th>Precio oferta</th>
+      <th>Descuento</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in ofertas %}
+    <tr>
+      <td>{{ o.juego.titulo if o.juego else "-" }}</td>
+      <td>{{ o.tienda.nombre if o.tienda else "-" }}</td>
+      <td>Bs {{ "%.2f"|format(o.precio_normal) }}</td>
+      <td>Bs {{ "%.2f"|format(o.precio_oferta) }}</td>
+      <td>{{ o.porcentaje_descuento | round(0) | int }}%</td>
+      <td>
+        {% if o.activa %}<span class="badge badge-active">Activa</span>
+        {% else %}<span class="badge badge-inactive">Inactiva</span>{% endif %}
+      </td>
+      <td class="actions-cell">
+        <a class="btn btn-sm btn-ghost" href="/admin/ofertas/{{ o.id }}/editar">Editar</a>
+        <form class="form-eliminar" method="post" action="/admin/ofertas/{{ o.id }}/eliminar">
+          <button class="btn btn-sm btn-danger" type="submit">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7">No hay ofertas registradas todavía.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

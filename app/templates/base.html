@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}SebaStore{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="brand-mark">SS</span>
+      <span class="brand-name">Seba<strong>Store</strong></span>
+    </a>
+    <nav class="topnav">
+      <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Catálogo</a>
+      <a href="/admin/juegos" class="{% if '/admin/juegos' in request.url.path %}active{% endif %}">Juegos</a>
+      <a href="/admin/ofertas" class="{% if '/admin/ofertas' in request.url.path %}active{% endif %}">Ofertas</a>
+      <a href="/docs" target="_blank">API</a>
+    </nav>
+    <button id="btn-sync" class="btn btn-accent">⟳ Recolectar ofertas</button>
+  </header>
+
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    Proyecto de examen · Arquitectura en capas · FastAPI + SQLite · Datos vía CheapShark API
+  </footer>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/static/js/main.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
