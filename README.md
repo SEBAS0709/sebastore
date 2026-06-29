@@ -262,6 +262,11 @@ Todos los formularios incluyen validación en dos niveles:
 - ✅ **Exportación de Datos**: CSV, Excel (con estilos), PDF (con tablas)
 - ✅ **Estadísticas Avanzadas**: Cálculo de ahorros, tendencias, rankings
 - ✅ **Sincronización Automática**: Script para actualizar ofertas programadamente
+- ✅ **Autenticación Segura**: Sistema JWT con hash PBKDF2
+- ✅ **Roles diferenciados**: Admin vs Cliente
+- ✅ **Sistema de Notificaciones**: Toast notifications elegantes
+- ✅ **Validación en Tiempo Real**: Validación de formularios antes de enviar
+- ✅ **UX Mejorada**: Animaciones suaves, feedback visual
 
 ## 🔍 Decisiones de Arquitectura
 

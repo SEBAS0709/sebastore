@@ -1,0 +1,63 @@
+<!-- Componente de notificaciones (toast notifications) -->
+<div id="notifications-container"></div>
+
+<script>
+/**
+ * Sistema de notificaciones toast
+ * Muestra mensajes elegantes en la esquina inferior derecha
+ */
+const NotificationSystem = {
+  show: function(mensaje, tipo = 'info', titulo = null) {
+    const container = document.getElementById('notifications-container');
+    
+    const notif = document.createElement('div');
+    notif.className = `toast toast-${tipo}`;
+    
+    let html = '';
+    if (titulo) {
+      html += `<strong>${titulo}</strong><br>`;
+    }
+    html += mensaje;
+    
+    notif.innerHTML = html;
+    container.appendChild(notif);
+    
+    // Auto-remove después de 5 segundos
+    setTimeout(() => {
+      notif.style.animation = 'slideOut 0.3s ease-out forwards';
+      setTimeout(() => notif.remove(), 300);
+    }, 5000);
+  },
+  
+  success: function(msg, title) {
+    this.show(msg, 'success', title || '✓ Éxito');
+  },
+  
+  error: function(msg, title) {
+    this.show(msg, 'error', title || '✗ Error');
+  },
+  
+  warning: function(msg, title) {
+    this.show(msg, 'warning', title || '⚠ Advertencia');
+  },
+  
+  info: function(msg, title) {
+    this.show(msg, 'info', title || 'ℹ Información');
+  }
+};
+
+// Mostrar notificaciones desde el servidor (si existen)
+document.addEventListener('DOMContentLoaded', function() {
+  const notificaciones = document.querySelector('[data-notificaciones]');
+  if (notificaciones) {
+    try {
+      const notifs = JSON.parse(notificaciones.dataset.notificaciones);
+      notifs.forEach(notif => {
+        NotificationSystem.show(notif.mensaje, notif.tipo, notif.titulo);
+      });
+    } catch (e) {
+      console.error('Error al parsear notificaciones:', e);
+    }
+  }
+});
+</script>
