@@ -31,17 +31,30 @@ def obtener_usuario_desde_request(request: Request, db: Session = Depends(get_db
         return None
 
 
+def _normalizar_tienda_id(tienda_id: Optional[str]) -> Optional[int]:
+    if tienda_id is None or tienda_id == "":
+        return None
+    try:
+        return int(tienda_id)
+    except ValueError:
+        return None
+
+
 @router.get("/")
 def home(
     request: Request,
     buscar: Optional[str] = None,
-    tienda_id: Optional[int] = None,
+    tienda_id: Optional[str] = None,
     orden: str = "descuento",
     db: Session = Depends(get_db),
 ):
+    tienda_id_normalizado = _normalizar_tienda_id(tienda_id)
     usuario_actual = obtener_usuario_desde_request(request, db)
     ofertas = OfertaService(db).listar(
-        limit=60, buscar=buscar, tienda_id=tienda_id, orden=orden
+        limit=60,
+        buscar=buscar,
+        tienda_id=tienda_id_normalizado,
+        orden=orden,
     )
     tiendas = TiendaRepository(db).listar()
     return templates.TemplateResponse(
@@ -51,7 +64,7 @@ def home(
             "ofertas": ofertas,
             "tiendas": tiendas,
             "buscar": buscar or "",
-            "tienda_id": tienda_id,
+            "tienda_id": tienda_id_normalizado,
             "orden": orden,
             "usuario_actual": usuario_actual,
         },

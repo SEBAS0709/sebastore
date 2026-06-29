@@ -10,10 +10,19 @@ from app.schemas.schemas import OfertaOut, OfertaCreate, OfertaUpdate
 router = APIRouter(prefix="/api/ofertas", tags=["Ofertas"])
 
 
+def _normalizar_tienda_id(tienda_id: Optional[str]) -> Optional[int]:
+    if tienda_id is None or tienda_id == "":
+        return None
+    try:
+        return int(tienda_id)
+    except ValueError:
+        return None
+
+
 @router.get("/", response_model=List[OfertaOut])
 def listar_ofertas(
     skip: int = 0, limit: int = 60,
-    tienda_id: Optional[int] = None,
+    tienda_id: Optional[str] = None,
     buscar: Optional[str] = None,
     orden: str = "descuento",
     solo_activas: bool = True,
@@ -21,7 +30,9 @@ def listar_ofertas(
 ):
     """Consultar: lista de ofertas con filtros (tienda, búsqueda, orden)."""
     return OfertaService(db).listar(
-        skip=skip, limit=limit, tienda_id=tienda_id,
+        skip=skip,
+        limit=limit,
+        tienda_id=_normalizar_tienda_id(tienda_id),
         buscar=buscar, orden=orden, solo_activas=solo_activas,
     )
 

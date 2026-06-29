@@ -17,7 +17,7 @@
   </select>
   <select name="orden" onchange="this.form.submit()">
     <option value="descuento" {% if orden == 'descuento' %}selected{% endif %}>Mayor descuento</option>
-    <option value="precio" {% if orden == 'precio' %}selected{% endif %}>Menor precio</option>
+    <option value="precio" {% if orden == 'precio' %}selected{% endif %}>Mejor precio</option>
     <option value="rating" {% if orden == 'rating' %}selected{% endif %}>Mejor calificación</option>
   </select>
   <button class="btn" type="submit">Filtrar</button>

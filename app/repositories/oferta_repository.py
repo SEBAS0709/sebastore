@@ -1,6 +1,6 @@
 
 from sqlalchemy.orm import Session, joinedload
-from app.models.models import Oferta
+from app.models.models import Oferta, Tienda
 
 
 class OfertaRepository:
@@ -11,7 +11,7 @@ class OfertaRepository:
         self,
         skip: int = 0,
         limit: int = 60,
-        tienda_id: int | None = None,
+        tienda_id: int | str | None = None,
         buscar: str | None = None,
         solo_activas: bool = True,
         orden: str = "descuento",
@@ -23,8 +23,19 @@ class OfertaRepository:
         )
         if solo_activas:
             query = query.filter(Oferta.activa == True)  # noqa: E712
-        if tienda_id:
-            query = query.filter(Oferta.tienda_id == tienda_id)
+        if tienda_id not in (None, ""):
+            tienda_id_str = str(tienda_id)
+            try:
+                tienda_id_int = int(tienda_id_str)
+            except ValueError:
+                tienda_id_int = None
+
+            if tienda_id_int is not None:
+                query = query.filter(Oferta.tienda_id == tienda_id_int)
+            else:
+                query = query.filter(
+                    Oferta.tienda.has(Tienda.cheapshark_store_id == tienda_id_str)
+                )
         if buscar:
             query = query.join(Juego).filter(Juego.titulo.ilike(f"%{buscar}%"))
 
