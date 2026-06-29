@@ -100,3 +100,22 @@ class StatsService:
             resultado.append({"rango": label, "cantidad": cantidad})
         
         return resultado
+
+    def obtener_vista_base_datos(self, limite: int = 5):
+        """Retorna un resumen visual de las tablas y sus registros recientes"""
+        resumen_tablas = {
+            "tiendas": self.db.query(func.count(Tienda.id)).scalar() or 0,
+            "juegos": self.db.query(func.count(Juego.id)).scalar() or 0,
+            "ofertas": self.db.query(func.count(Oferta.id)).scalar() or 0,
+        }
+
+        tiendas_recientes = self.db.query(Tienda).order_by(Tienda.id.desc()).limit(limite).all()
+        juegos_recientes = self.db.query(Juego).order_by(Juego.id.desc()).limit(limite).all()
+        ofertas_recientes = self.db.query(Oferta).order_by(Oferta.actualizada_en.desc(), Oferta.id.desc()).limit(limite).all()
+
+        return {
+            "resumen_tablas": resumen_tablas,
+            "tiendas_recientes": tiendas_recientes,
+            "juegos_recientes": juegos_recientes,
+            "ofertas_recientes": ofertas_recientes,
+        }

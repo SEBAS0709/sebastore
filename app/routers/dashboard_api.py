@@ -40,6 +40,7 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     juegos_populares = stats_service.obtener_juegos_mas_vendidos(limite=8)
     tiendas_populares = stats_service.obtener_tiendas_mas_ofertas(limite=6)
     distribucion_descuentos = stats_service.obtener_distribucion_descuentos()
+    vista_base_datos = stats_service.obtener_vista_base_datos(limite=5)
     
     return templates.TemplateResponse(
         "dashboard.html",
@@ -49,6 +50,7 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
             "juegos_populares": juegos_populares,
             "tiendas_populares": tiendas_populares,
             "distribucion_descuentos": distribucion_descuentos,
+            "vista_base_datos": vista_base_datos,
             "usuario_actual": usuario_actual,
         },
     )

@@ -42,6 +42,96 @@
   </div>
 </div>
 
+<!-- Vista rápida de la base de datos -->
+<div class="chart-card full-width">
+  <h3>🗃️ Vista rápida de la base de datos</h3>
+  <p style="margin-top: 0; opacity: 0.8;">Se actualiza al recargar la página y te deja ver qué cambió en las tablas principales.</p>
+
+  <div class="metrics-grid" style="margin-top: 20px;">
+    <div class="metric-card">
+      <div class="metric-icon">🏪</div>
+      <div class="metric-content">
+        <p class="metric-label">Registros en tiendas</p>
+        <p class="metric-value">{{ vista_base_datos.resumen_tablas.tiendas }}</p>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🎮</div>
+      <div class="metric-content">
+        <p class="metric-label">Registros en juegos</p>
+        <p class="metric-value">{{ vista_base_datos.resumen_tablas.juegos }}</p>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">💸</div>
+      <div class="metric-content">
+        <p class="metric-label">Registros en ofertas</p>
+        <p class="metric-value">{{ vista_base_datos.resumen_tablas.ofertas }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-container" style="margin-top: 20px;">
+    <div class="chart-card">
+      <h3>Últimos juegos</h3>
+      <div class="chart-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Creado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for juego in vista_base_datos.juegos_recientes %}
+            <tr>
+              <td>{{ juego.id }}</td>
+              <td>{{ juego.titulo }}</td>
+              <td>{{ juego.creado_en.strftime('%d/%m/%Y %H:%M') if juego.creado_en else '-' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3">No hay juegos registrados</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Últimas ofertas</h3>
+      <div class="chart-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Juego</th>
+              <th>Precio</th>
+              <th>Actualizada</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for oferta in vista_base_datos.ofertas_recientes %}
+            <tr>
+              <td>{{ oferta.id }}</td>
+              <td>{{ oferta.juego.titulo if oferta.juego else '-' }}</td>
+              <td>Bs {{ "%.2f"|format(oferta.precio_oferta) }}</td>
+              <td>{{ oferta.actualizada_en.strftime('%d/%m/%Y %H:%M') if oferta.actualizada_en else '-' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="4">No hay ofertas registradas</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Sección de gráficos -->
 <div class="charts-container">
   <!-- Juegos más populares -->
