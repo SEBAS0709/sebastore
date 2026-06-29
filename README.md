@@ -147,12 +147,23 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-#### 4. Inicializar base de datos (opcional: cargar datos de ejemplo)
+#### 4. Crear usuario administrador
+```bash
+python create_admin.py
+```
+
+Esto creará un usuario admin con credenciales:
+- **Usuario**: `admin`
+- **Contraseña**: `admin123`
+
+> ⚠️ Cambia esta contraseña inmediatamente después de entrar al sistema.
+
+#### 5. Inicializar base de datos (opcional: cargar datos de ejemplo)
 ```bash
 python seed_data.py
 ```
 
-#### 5. Ejecutar el servidor
+#### 6. Ejecutar el servidor
 ```bash
 uvicorn app.main:app --reload
 ```
@@ -164,9 +175,11 @@ La aplicación estará disponible en **http://localhost:8000**
 | Ruta | Descripción |
 |------|-------------|
 | `/` | Catálogo público de ofertas |
-| `/admin/dashboard` | 📊 Dashboard con métricas |
-| `/admin/juegos` | Gestión de juegos (CRUD) |
-| `/admin/ofertas` | Gestión de ofertas (CRUD) |
+| `/login` | 🔐 Iniciar sesión |
+| `/registro` | 📝 Crear nueva cuenta |
+| `/admin/dashboard` | 📊 Dashboard con métricas (solo admin) |
+| `/admin/juegos` | Gestión de juegos (solo admin) |
+| `/admin/ofertas` | Gestión de ofertas (solo admin) |
 | `/api/juegos` | API REST de juegos |
 | `/api/ofertas` | API REST de ofertas |
 | `/api/sync/cheapshark` | Sincronizar ofertas desde API externa |
