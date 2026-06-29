@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - SebaStore{% endblock %}
+{% block content %}
+
+<div class="admin-header">
+  <h1>📊 Dashboard de Estadísticas</h1>
+  <p>Visión general del negocio en tiempo real</p>
+</div>
+
+<!-- Tarjetas de métricas principales -->
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-icon">🎮</div>
+    <div class="metric-content">
+      <p class="metric-label">Juegos en catálogo</p>
+      <p class="metric-value">{{ metricas.total_juegos }}</p>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon">🏪</div>
+    <div class="metric-content">
+      <p class="metric-label">Tiendas conectadas</p>
+      <p class="metric-value">{{ metricas.total_tiendas }}</p>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon">💰</div>
+    <div class="metric-content">
+      <p class="metric-label">Ofertas activas</p>
+      <p class="metric-value">{{ metricas.total_ofertas_activas }}</p>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon">💵</div>
+    <div class="metric-content">
+      <p class="metric-label">Ahorro total para clientes</p>
+      <p class="metric-value">Bs {{ "%.2f"|format(metricas.ahorro_total) }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Sección de gráficos -->
+<div class="charts-container">
+  <!-- Juegos más populares -->
+  <div class="chart-card">
+    <h3>🎯 Juegos con más ofertas</h3>
+    <div class="chart-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Juego</th>
+            <th>Ofertas</th>
+            <th>Descuento promedio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in juegos_populares %}
+          <tr>
+            <td>{{ item.juego.titulo }}</td>
+            <td><span class="badge badge-info">{{ item.cantidad_ofertas }}</span></td>
+            <td><span class="badge badge-success">{{ item.descuento_promedio }}%</span></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3">No hay datos disponibles</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tiendas más activas -->
+  <div class="chart-card">
+    <h3>🏪 Tiendas más activas</h3>
+    <div class="chart-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Tienda</th>
+            <th>Cantidad de ofertas</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in tiendas_populares %}
+          <tr>
+            <td>{{ item.tienda.nombre }}</td>
+            <td><span class="badge badge-info">{{ item.cantidad_ofertas }}</span></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="2">No hay datos disponibles</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Distribución de descuentos -->
+<div class="chart-card full-width">
+  <h3>📈 Distribución de descuentos</h3>
+  <div class="distribution-bars">
+    {% for item in distribucion_descuentos %}
+    <div class="bar-item">
+      <p class="bar-label">{{ item.rango }}</p>
+      <div class="bar-container">
+        <div class="bar-fill" style="width: {% if item.cantidad > 0 %}{{ (item.cantidad / distribucion_descuentos|map(attribute='cantidad')|max|default(1)) * 100 }}{% else %}0{% endif %}%"></div>
+      </div>
+      <p class="bar-value">{{ item.cantidad }} ofertas</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

@@ -16,6 +16,7 @@
     </a>
     <nav class="topnav">
       <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Catálogo</a>
+      <a href="/admin/dashboard" class="{% if '/admin/dashboard' in request.url.path %}active{% endif %}">📊 Dashboard</a>
       <a href="/admin/juegos" class="{% if '/admin/juegos' in request.url.path %}active{% endif %}">Juegos</a>
       <a href="/admin/ofertas" class="{% if '/admin/ofertas' in request.url.path %}active{% endif %}">Ofertas</a>
       <a href="/docs" target="_blank">API</a>
