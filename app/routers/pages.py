@@ -1,5 +1,5 @@
 
-from fastapi import APIRouter, Depends, Request, Form
+from fastapi import APIRouter, Depends, Request, Form, Cookie
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -8,12 +8,27 @@ from typing import Optional
 from app.database import get_db
 from app.services.juego_service import JuegoService
 from app.services.oferta_service import OfertaService
+from app.services.auth_service import AuthService
 from app.repositories.tienda_repository import TiendaRepository
 from app.schemas.schemas import JuegoCreate, JuegoUpdate, OfertaCreate, OfertaUpdate
 
 router = APIRouter(tags=["Páginas"])
 templates = Jinja2Templates(directory="app/templates")
 
+
+def obtener_usuario_desde_request(request: Request, db: Session = Depends(get_db)):
+    """Obtiene el usuario autenticado desde la cookie del request"""
+    token = request.cookies.get("token")
+    if not token:
+        return None
+    
+    try:
+        auth_service = AuthService(db)
+        usuario_id = auth_service.verificar_token(token)
+        usuario = auth_service.obtener_usuario_por_id(usuario_id)
+        return usuario
+    except:
+        return None
 
 
 @router.get("/")
@@ -24,6 +39,7 @@ def home(
     orden: str = "descuento",
     db: Session = Depends(get_db),
 ):
+    usuario_actual = obtener_usuario_desde_request(request, db)
     ofertas = OfertaService(db).listar(
         limit=60, buscar=buscar, tienda_id=tienda_id, orden=orden
     )
@@ -37,6 +53,7 @@ def home(
             "buscar": buscar or "",
             "tienda_id": tienda_id,
             "orden": orden,
+            "usuario_actual": usuario_actual,
         },
     )
 
@@ -46,17 +63,19 @@ def home(
 # ---------------------------------------------------------------
 @router.get("/admin/juegos")
 def admin_juegos(request: Request, buscar: Optional[str] = None, db: Session = Depends(get_db)):
+    usuario_actual = obtener_usuario_desde_request(request, db)
     juegos = JuegoService(db).listar(limit=200, buscar=buscar)
     return templates.TemplateResponse(
         "admin_juegos.html",
-        {"request": request, "juegos": juegos, "buscar": buscar or ""},
+        {"request": request, "juegos": juegos, "buscar": buscar or "", "usuario_actual": usuario_actual},
     )
 
 
 @router.get("/admin/juegos/nuevo")
-def nuevo_juego_form(request: Request):
+def nuevo_juego_form(request: Request, db: Session = Depends(get_db)):
+    usuario_actual = obtener_usuario_desde_request(request, db)
     return templates.TemplateResponse(
-        "admin_juego_form.html", {"request": request, "juego": None}
+        "admin_juego_form.html", {"request": request, "juego": None, "usuario_actual": usuario_actual}
     )
 
 
@@ -78,9 +97,10 @@ def crear_juego_form(
 
 @router.get("/admin/juegos/{juego_id}/editar")
 def editar_juego_form(juego_id: int, request: Request, db: Session = Depends(get_db)):
+    usuario_actual = obtener_usuario_desde_request(request, db)
     juego = JuegoService(db).obtener(juego_id)
     return templates.TemplateResponse(
-        "admin_juego_form.html", {"request": request, "juego": juego}
+        "admin_juego_form.html", {"request": request, "juego": juego, "usuario_actual": usuario_actual}
     )
 
 
@@ -112,19 +132,21 @@ def eliminar_juego_form(juego_id: int, db: Session = Depends(get_db)):
 # ---------------------------------------------------------------
 @router.get("/admin/ofertas")
 def admin_ofertas(request: Request, db: Session = Depends(get_db)):
+    usuario_actual = obtener_usuario_desde_request(request, db)
     ofertas = OfertaService(db).listar(limit=200, solo_activas=False)
     return templates.TemplateResponse(
-        "admin_ofertas.html", {"request": request, "ofertas": ofertas}
+        "admin_ofertas.html", {"request": request, "ofertas": ofertas, "usuario_actual": usuario_actual}
     )
 
 
 @router.get("/admin/ofertas/nuevo")
 def nueva_oferta_form(request: Request, db: Session = Depends(get_db)):
+    usuario_actual = obtener_usuario_desde_request(request, db)
     juegos = JuegoService(db).listar(limit=500)
     tiendas = TiendaRepository(db).listar()
     return templates.TemplateResponse(
         "admin_oferta_form.html",
-        {"request": request, "oferta": None, "juegos": juegos, "tiendas": tiendas},
+        {"request": request, "oferta": None, "juegos": juegos, "tiendas": tiendas, "usuario_actual": usuario_actual},
     )
 
 
@@ -150,12 +172,13 @@ def crear_oferta_form(
 
 @router.get("/admin/ofertas/{oferta_id}/editar")
 def editar_oferta_form(oferta_id: int, request: Request, db: Session = Depends(get_db)):
+    usuario_actual = obtener_usuario_desde_request(request, db)
     oferta = OfertaService(db).obtener(oferta_id)
     juegos = JuegoService(db).listar(limit=500)
     tiendas = TiendaRepository(db).listar()
     return templates.TemplateResponse(
         "admin_oferta_form.html",
-        {"request": request, "oferta": oferta, "juegos": juegos, "tiendas": tiendas},
+        {"request": request, "oferta": oferta, "juegos": juegos, "tiendas": tiendas, "usuario_actual": usuario_actual},
     )
 
 

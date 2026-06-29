@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from app.database import Base, engine
 from app.models import models  # noqa: F401 - necesario para registrar las tablas
 
-from app.routers import pages, juegos_api, ofertas_api, sync_api, export_api, dashboard_api
+from app.routers import pages, juegos_api, ofertas_api, sync_api, export_api, dashboard_api, auth_api
 
 # Crea las tablas en SQLite si todavía no existen
 Base.metadata.create_all(bind=engine)
@@ -33,3 +33,6 @@ app.include_router(ofertas_api.router)
 app.include_router(sync_api.router)
 app.include_router(export_api.router)
 app.include_router(dashboard_api.router)
+
+# Autenticación
+app.include_router(auth_api.router)

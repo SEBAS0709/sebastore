@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Iniciar sesión - SebaStore{% endblock %}
+{% block content %}
+
+<div class="auth-container">
+  <div class="auth-card">
+    <h1>🔐 Iniciar sesión</h1>
+    <p class="subtitle">Accede a tu cuenta de SebaStore</p>
+    
+    <form method="post" action="/login" class="auth-form">
+      <div class="form-group">
+        <label for="nombre_usuario">Nombre de usuario</label>
+        <input 
+          type="text" 
+          id="nombre_usuario" 
+          name="nombre_usuario" 
+          placeholder="tu_usuario"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="contraseña">Contraseña</label>
+        <input 
+          type="password" 
+          id="contraseña" 
+          name="contraseña" 
+          placeholder="••••••••"
+          required
+        >
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-large">Iniciar sesión</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>¿No tienes cuenta? <a href="/registro">Regístrate aquí</a></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

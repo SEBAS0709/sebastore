@@ -21,6 +21,22 @@
       <a href="/admin/ofertas" class="{% if '/admin/ofertas' in request.url.path %}active{% endif %}">Ofertas</a>
       <a href="/docs" target="_blank">API</a>
     </nav>
+    {% if usuario_actual %}
+    <div class="user-menu">
+      <div class="user-info">
+        <span>{{ usuario_actual.nombre_usuario }}</span>
+        {% if usuario_actual.es_admin() %}
+        <span class="user-badge admin">Admin</span>
+        {% endif %}
+      </div>
+      <a href="/logout" class="btn btn-sm btn-ghost">Salir</a>
+    </div>
+    {% else %}
+    <div class="user-menu">
+      <a href="/login" class="btn btn-sm">Iniciar sesión</a>
+      <a href="/registro" class="btn btn-sm btn-accent">Registrarse</a>
+    </div>
+    {% endif %}
     <button id="btn-sync" class="btn btn-accent">⟳ Recolectar ofertas</button>
   </header>
 
